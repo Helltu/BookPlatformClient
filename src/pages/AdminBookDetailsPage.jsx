@@ -1,4 +1,4 @@
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useRef} from 'react';
 import {useParams} from 'react-router-dom';
 import {Button} from '@/components/ui/button';
 import {Input} from '@/components/ui/input';
@@ -27,6 +27,8 @@ const AdminBookDetailsPage = () => {
     const [covers] = useState(['Твердый', 'Мягкий']);
     const [allGenres, setAllGenres] = useState([]);
 
+    const descriptionRef = useRef(null);
+
     useEffect(() => {
         const fetchBookData = async () => {
             try {
@@ -54,6 +56,14 @@ const AdminBookDetailsPage = () => {
 
         fetchBookData();
     }, [id]);
+
+    useEffect(() => {
+        if (descriptionRef.current && bookDetails?.book?.description) {
+            const textarea = descriptionRef.current;
+            textarea.style.height = 'auto';
+            textarea.style.height = `${textarea.scrollHeight}px`;
+        }
+    });
 
     const handleInputChange = (field, value) => {
         setBookDetails((prevDetails) => ({
@@ -119,7 +129,6 @@ const AdminBookDetailsPage = () => {
             className: 'bg-black text-white',
         });
     };
-
 
     const handleFileChange = (event) => {
         const files = Array.from(event.target.files);
@@ -406,6 +415,7 @@ const AdminBookDetailsPage = () => {
                             </div>
 
                             <Textarea
+                                ref={descriptionRef}
                                 className="text-gray-700 text-lg leading-relaxed resize-none overflow-hidden"
                                 value={book.description}
                                 onRender={(e)=>{
