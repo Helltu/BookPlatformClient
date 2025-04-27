@@ -26,7 +26,7 @@ const CartBookItem = React.memo(({ book, updateQuantity, removeBook, onClose }) 
         axiosInstance.get(`/general/books/${book.bookId}/media`)
             .then(response => {
                 if (response.data && response.data.length > 0) {
-                    const mediaData = response.data[0].media;
+                    const mediaData = response.data.sort((a, b) => a.id - b.id)[0].media;
                     setBookImage(mediaData);
                 }
             })
@@ -64,7 +64,7 @@ const CartBookItem = React.memo(({ book, updateQuantity, removeBook, onClose }) 
             className="group relative border border-gray-200 p-4 rounded-lg hover:shadow-lg flex items-center space-x-4 w-full"
         >
             <div
-                className="w-24 h-24 overflow-hidden rounded-md bg-gray-200 flex-shrink-0 cursor-pointer"
+                className="w-24 h-24 overflow-hidden rounded-md flex-shrink-0 cursor-pointer"
                 onClick={() => {
                     onClose();
                     navigate(`/book/${book.bookId}`);
@@ -73,7 +73,7 @@ const CartBookItem = React.memo(({ book, updateQuantity, removeBook, onClose }) 
                 <img
                     src={bookImage ? `data:image/jpeg;base64,${bookImage}` : 'https://via.placeholder.com/150'}
                     alt={`Обложка книги ${bookData.title || 'Загрузка...'}`}
-                    className="h-full w-full object-cover object-center"
+                    className="h-full w-full object-contain object-center"
                 />
             </div>
             <div className="flex-grow flex flex-col">

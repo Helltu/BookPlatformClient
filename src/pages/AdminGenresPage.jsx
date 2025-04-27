@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Table, TableRow, TableCell, TableHead, TableHeader, TableBody } from '@/components/ui/table';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { useToast } from '@/hooks/use-toast';
-import { useReactTable, getCoreRowModel, getSortedRowModel } from '@tanstack/react-table';
+import {useReactTable, getCoreRowModel, getSortedRowModel, getFilteredRowModel} from '@tanstack/react-table';
 import { flexRender } from '@tanstack/react-table';
 import { ArrowUpDown } from 'lucide-react';
 
@@ -71,6 +71,7 @@ const AdminGenresPage = () => {
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
         getSortedRowModel: getSortedRowModel(),
+        getFilteredRowModel: getFilteredRowModel(),
     });
 
     const fetchGenres = async () => {
@@ -88,21 +89,18 @@ const AdminGenresPage = () => {
         try {
             const newGenre = { name: newGenreName };
             await axiosInstance.post('/manager/genres', newGenre);
-            toast({
-                title: 'Жанр добавлен',
-                description: 'Новый жанр успешно создан.',
-                variant: 'success',
-            });
-            fetchGenres();
-            setNewGenreName('');
-            setIsDialogOpen(false);
         } catch (error) {
-            toast({
-                title: 'Ошибка',
-                description: 'Не удалось добавить жанр.',
-                variant: 'destructive',
-            });
+            console.log('Не удалось добавить жанр.');
+            return;
         }
+        toast({
+            title: 'Жанр добавлен',
+            description: 'Новый жанр успешно создан.',
+            variant: 'success',
+        });
+        fetchGenres();
+        setNewGenreName('');
+        setIsDialogOpen(false);
     };
 
     const handleEditGenre = async () => {
@@ -238,7 +236,7 @@ const AdminGenresPage = () => {
                             Отмена
                         </Button>
                         <Button onClick={editingGenre ? handleEditGenre : handleAddGenre}>
-                            {editingGenre ? 'Сохранить изменения' : 'Добавить'}
+                            {editingGenre ? 'Сохранить' : 'Добавить'}
                         </Button>
                     </DialogFooter>
                 </DialogContent>

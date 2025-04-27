@@ -327,7 +327,7 @@ const BookDetailsPage = () => {
                                     <span className="font-medium block mb-2">Жанры:</span>
                                     <div className="flex flex-wrap gap-2">
                                         {genres.map((genre, index) => (
-                                            <Badge key={index} className="px-3 py-2">
+                                            <Badge key={index} className="px-3 py-2 bg-gray-700">
                                                 {genre.name}
                                             </Badge>
                                         ))}

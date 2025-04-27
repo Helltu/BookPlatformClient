@@ -3,6 +3,7 @@ import axiosInstance from '../api/axios';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Table, TableRow, TableCell, TableHead, TableHeader, TableBody } from '@/components/ui/table';
+import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from '@/components/ui/dialog';
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from '@/components/ui/select';
 import { useToast } from '@/hooks/use-toast';
@@ -83,8 +84,42 @@ const AdminOrdersPage = () => {
             },
             {
                 accessorKey: 'userId',
-                header: 'ID пользователя',
-                cell: ({ row }) => <span>{row.getValue('userId')}</span>,
+                header: ({ column }) => (
+                    <Button
+                        variant="ghost"
+                        className="px-0"
+                        onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+                    >
+                        ID пользователя <ArrowUpDown />
+                    </Button>
+                ),
+                cell: ({ row }) => (
+                    <Popover>
+                        <PopoverTrigger asChild>
+                            <Button variant="link">{row.getValue('userId')}</Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-64">
+                            {users[row.getValue('userId')] ? (
+                                <div className="space-y-2">
+                                    <p>
+                                        <strong>Email:</strong> {users[row.getValue('userId')].email}
+                                    </p>
+                                    <p>
+                                        <strong>Номер телефона:</strong> {users[row.getValue('userId')].phoneNumber}
+                                    </p>
+                                    <p>
+                                        <strong>Имя:</strong> {users[row.getValue('userId')].name}
+                                    </p>
+                                    <p>
+                                        <strong>Фамилия:</strong> {users[row.getValue('userId')].surname}
+                                    </p>
+                                </div>
+                            ) : (
+                                <p>Загрузка данных пользователя...</p>
+                            )}
+                        </PopoverContent>
+                    </Popover>
+                ),
             },
             {
                 accessorKey: 'status',
@@ -217,13 +252,23 @@ const AdminOrdersPage = () => {
         [users, bookTitles, navigate]
     );
 
+    const filteredOrders = useMemo(() => {
+        if (!bookFilter) return orders;
+
+        return orders.filter((order) =>
+            order.orderDetailsDTO.some((detail) =>
+                (bookTitles[detail.bookId] || '').toLowerCase().includes(bookFilter.toLowerCase())
+            )
+        );
+    }, [orders, bookTitles, bookFilter]);
+
     const table = useReactTable({
-        data: orders,
+        data: filteredOrders,
         columns,
         state: { sorting },
         onSortingChange: setSorting,
         getCoreRowModel: getCoreRowModel(),
-        getSortedRowModel: getSortedRowModel(),
+        getSortedRowModel: getSortedRowModel()
     });
 
     useEffect(() => {
