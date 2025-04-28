@@ -1,24 +1,25 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {useLocation, useNavigate} from 'react-router-dom';
-import { FaShoppingCart } from 'react-icons/fa';
+import {FaShoppingCart} from 'react-icons/fa';
+import {Bot} from 'lucide-react';
 import logo from '../assets/logo_dark.png';
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import {Button} from "@/components/ui/button";
+import {Input} from "@/components/ui/input";
 import Cart from './Cart';
-import { useSearch } from '../api/SearchContext';
+import {useSearch} from '../api/SearchContext';
 
-const Navbar = () => {
+const Navbar = ({isAssistantOpen, onToggleAssistant, onCloseAssistant}) => {
     const navigate = useNavigate();
     const location = useLocation();
     const [isLogoVisible, setIsLogoVisible] = useState(true);
     const [isCartOpen, setIsCartOpen] = useState(false);
-    const { searchTerm, setSearchTerm } = useSearch();
+    const {searchTerm, setSearchTerm} = useSearch();
     const [inputValue, setInputValue] = useState(searchTerm);
     const userName = localStorage.getItem('userName') || 'Guest';
     const profileImageUrl = `https://ui-avatars.com/api/?name=${encodeURIComponent(userName)}`;
 
     useEffect(() => {
-        if(location.pathname === "/")
+        if (location.pathname === "/")
             return;
         setInputValue('');
     }, [location.pathname]);
@@ -57,6 +58,14 @@ const Navbar = () => {
         }
     };
 
+    const handleOpenCart = () => {
+        if (isAssistantOpen) {
+            console.log('Closing assistant before opening cart');
+            onCloseAssistant();
+        }
+        setIsCartOpen(true);
+    };
+
     return (
         <nav className="top-0 left-0 right-0 z-10 p-4 bg-white shadow-md">
             <div className="container mx-auto max-w-7xl px-4 flex justify-between items-center space-x-12">
@@ -74,6 +83,9 @@ const Navbar = () => {
                     <Button variant="link" onClick={() => navigate('/')}>
                         Главная
                     </Button>
+                    <Button variant="link" onClick={() => navigate('/user/orders')}>
+                        Заказы
+                    </Button>
                 </div>
 
                 {/* Поле ввода */}
@@ -87,9 +99,16 @@ const Navbar = () => {
                     />
                 </div>
 
-                {/* Корзина и кнопка "Выйти" */}
+                {/* Корзина, ассистент, профиль и выход */}
                 <div className="flex items-center space-x-4">
-                    <button onClick={() => setIsCartOpen(true)} className="text-gray-600 hover:text-gray-800 text-2xl">
+
+                    <Button onClick={onToggleAssistant} variant="ghost" size="icon">
+                        <Bot
+                            className={`flex items-center space-x-4 ${isAssistantOpen ? 'text-blue-600' : 'text-gray-600 hover:text-gray-800'}`}
+                        />
+                    </Button>
+
+                    <button onClick={handleOpenCart} className="text-gray-600 hover:text-gray-800 text-2xl">
                         <FaShoppingCart/>
                     </button>
 
