@@ -93,6 +93,9 @@ const AdminNavbar = () => {
                     <Button variant="link" onClick={() => navigate('/admin/orders')}>
                         Заказы
                     </Button>
+                    <Button variant="link" onClick={() => navigate('/admin/dashboard')}>
+                        Аналитика
+                    </Button>
                 </div>
 
                 <div className="flex items-center space-x-4">

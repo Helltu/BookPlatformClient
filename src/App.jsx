@@ -16,6 +16,7 @@ import { Toaster } from '@/components/ui/toaster';
 import { useToast } from '@/hooks/use-toast';
 import { SearchProvider } from './api/SearchContext';
 import UserOrdersPage from './pages/UserOrdersPage';
+import DashboardPage from "./pages/DashboardPage.jsx";
 
 const App = () => {
     const { toast } = useToast();
@@ -84,6 +85,7 @@ const App = () => {
                         <Route path="/admin/add-book" element={<AdminAddBookPage />} />
                         <Route path="/admin/genres" element={<AdminGenresPage />} />
                         <Route path="/admin/orders" element={<AdminOrdersPage />} />
+                        <Route path="/admin/dashboard" element={<DashboardPage />} />
                     </>
                 )}
 
