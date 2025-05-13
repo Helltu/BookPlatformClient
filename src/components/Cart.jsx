@@ -127,6 +127,7 @@ const OrderForm = ({userId, cartBooks, onClose}) => {
                                             field.onChange(date);
                                             setPopoverOpen(false);
                                         }}
+                                        locale={ru}
                                         disabled={(date) => date <= new Date() || date > addDays(new Date(), 7)}
                                         initialFocus
                                     />
